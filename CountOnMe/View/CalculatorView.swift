@@ -8,14 +8,24 @@
 
 import UIKit
 
+
 class CalculatorView: UIView {
+    
+    // MARK: - PROPERTIES
 
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
+    @IBOutlet weak var textView: UITextView!
+    
+    var elements: [String] {
+        return textView.text.split(separator: " ").map { "\($0)" }
     }
-    */
-
+    
+    
+    func clear() {
+        print(textView)
+        textView.text = ""
+    }
+    
+    
+    // MARK: - METHODS
+    
 }
