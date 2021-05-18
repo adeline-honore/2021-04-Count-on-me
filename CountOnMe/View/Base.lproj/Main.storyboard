@@ -296,7 +296,7 @@
                             <constraint firstItem="ryo-ZD-mkx" firstAttribute="top" secondItem="isI-Gg-Iye" secondAttribute="bottom" constant="20" id="mTe-CM-YHz"/>
                         </constraints>
                         <connections>
-                            <outlet property="textView" destination="T2H-yn-nBB" id="8Xe-zM-NjZ"/>
+                            <outlet property="textView" destination="T2H-yn-nBB" id="VJh-4r-DFE"/>
                         </connections>
                     </view>
                 </viewController>

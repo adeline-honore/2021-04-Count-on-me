@@ -12,10 +12,7 @@ class LogicCalcul {
     
     // MARK: - PROPERTIES
             
-    private var operationsToReduce: [String] = [""]
     
-    
-    // MARK: - METHODS
     
     enum Operand {
         case addition
@@ -26,6 +23,8 @@ class LogicCalcul {
     
     private var operand: Operand = .addition
     
+    private var operationsToReduce: [String] = [""]
+    
     private let additionOperand = "+"
     private let substractionOperand = "-"
     private let multiplicationOperand = "x"
@@ -33,8 +32,12 @@ class LogicCalcul {
     private var priorityOperand = ""
     
     
+    // MARK: - METHODS
     
-    func didTappedEqualButton(string: [String]) /* mettre return */ {
+   
+    
+    func didTappedEqualButton(string: [String]) -> String {
+        let result: String = ""
         
         // Iterate over operations while an operand still here
         while (operationsToReduce.count > 1) {
@@ -46,6 +49,7 @@ class LogicCalcul {
             simpleCalcul(equation: operationsToReduce)
         }
         //return int
+        return result
     }
     
     
@@ -72,8 +76,11 @@ class LogicCalcul {
         default:
             fatalError("Unknown operator !")
         }
+        
+        
         operationsToReduce = Array(equation.dropFirst(3))
-        operationsToReduce.insert("\(result)", at: 0)
+        
+        
     }
     
     

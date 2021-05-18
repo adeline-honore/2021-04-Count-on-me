@@ -42,8 +42,8 @@ class ViewController: UIViewController {
     }
     
     @IBAction func delLastEntry() {
-        // mettre une boucle for pour parcourir le tableau et savoir si il s'agit d'un chiffre ou un operateur car si O : remove 3
-        calculatorView.textView.text.remove(at: calculatorView.textView.text.index(before: calculatorView.textView.text.endIndex))
+        calculatorView.del()
+        
     }
     
     
@@ -67,10 +67,10 @@ class ViewController: UIViewController {
             return
         }*/
         
-        logic.didTappedEqualButton(string: calculatorView.elements)
+        let result = logic.didTappedEqualButton(string: calculatorView.elements)
         
-        //calculatorView.textView.text.append(" = \(logic.resultToPrint)")
         
+        viewUpdate(string: result)
     }
     
     
@@ -150,6 +150,10 @@ class ViewController: UIViewController {
         }
     }
     
+    
+    private func viewUpdate(string: String) {
+        calculatorView.printResult(string: string)
+    }
 }
 
 
