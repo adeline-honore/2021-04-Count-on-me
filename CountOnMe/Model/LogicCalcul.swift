@@ -37,32 +37,35 @@ class LogicCalcul {
    
     
     func didTappedEqualButton(string: [String]) -> String {
-        let result: String = ""
+        var result: [String] = [""]
         
         // Iterate over operations while an operand still here
         while (operationsToReduce.count > 1) {
             
             // PriorityCalcul
-            priorityCalcul(equation: operationsToReduce)
-        
-            // simpleCalcul
-            simpleCalcul(equation: operationsToReduce)
+            result = priorityCalcul(equation: operationsToReduce)
         }
-        //return int
-        return result
+        
+        while (operationsToReduce.count > 1) {
+            
+            // simpleCalcul
+            result = simpleCalcul(equation: operationsToReduce)
+        }
+        
+        return result[0]
     }
     
     
     
     
-    private func simpleCalcul(equation: [String]) {
+    private func simpleCalcul(equation: [String]) -> [String] {
         
         guard let left = Int(equation[0]) else {
-            return
+            return [""]
         }
         
         guard let right = Int(equation[2]) else {
-            return
+            return [""]
         }
         
         let equationOperand = equation[1]
@@ -77,18 +80,14 @@ class LogicCalcul {
             fatalError("Unknown operator !")
         }
         
-        
         operationsToReduce = Array(equation.dropFirst(3))
         
-        
+        return operationsToReduce
     }
     
     
     
-    
-    
-    
-    private func priorityCalcul(equation: [String]) {
+    private func priorityCalcul(equation: [String]) -> [String] {
         
         while (equation.firstIndex(of: multiplicationOperand ) != nil) || equation.firstIndex(of: divisionOperand) != nil {
             
@@ -102,22 +101,22 @@ class LogicCalcul {
             }
             
             guard let n = equation.firstIndex(of: priorityOperand) else {
-                return
+                return [""]
             }
             
             guard let left = Int(equation[n-1]) else {
-                return
+                return [""]
             }
             guard let right = Int(equation[n+1]) else {
-                return
+                return [""]
             }
                         
             operationsToReduce[n-1] = String(operation(left: left, operand: operand, right: right))
             operationsToReduce.remove(at: n)
             operationsToReduce.remove(at: n)
         }
+        return operationsToReduce
     }
-    
     
     
     private func operation (left: Int, operand: Operand, right: Int) -> Int {
@@ -132,16 +131,8 @@ class LogicCalcul {
         case .multiplication:
             resultat = left * right
         case .division:
-            if right != 0 {
-                resultat = left / right
-            }
-            else {
-                print("division impossible")
-                //alertVC(divisionImpossible)
-                //return
-            }
+            resultat = left / right
         }
-        //operand = String(operand)
         return resultat
     }
 }
