@@ -42,18 +42,16 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
     }
     
     override func loadView() {
         super.loadView()
-        let calculatorView = CalculatorView()
-        self.calculatorView = calculatorView
+        calculatorView = view as? CalculatorView
     }
     
     // View actions
     @IBAction func newCalculation() {
-        calculatorView.clear()
+        calculatorView.printZero()
     }
     
     @IBAction func delLastEntry() {
@@ -116,25 +114,15 @@ class ViewController: UIViewController {
             return
         }
         
-        if expressionHaveResult == false {
-            print("expre no have result")
-            calculatorView.textView.text = ""
+        if expressionHaveResult == true || calculatorView.textView.text == "0" {
+            calculatorView.clear()
         }
         
-        if /*calcul.textView.text.firstIndex(of: "=") != nil*/ calculatorView.textView == nil {
-            print("sdfgh")
-            calculatorView.textView.text.firstIndex(of: "=") != nil
-            calculatorView.textView.text.append(numberText)
-        }
-        else {
-            print(numberText)
-            calculatorView.textView.text.append(numberText)
-        }
-        
+        /*
         // ajouter la division impossible / 0
         if numberText == "0" {
             divisionImposible()
-        }
+        }*/
         
         calculatorView.textView.text.append(numberText)
     }

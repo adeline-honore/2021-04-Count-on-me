@@ -13,6 +13,7 @@ class CalculatorView: UIView {
     
     // MARK: - PROPERTIES
 
+    //@IBOutlet weak var textView: UITextView!
     @IBOutlet weak var textView: UITextView!
     
     var elements: [String] {
@@ -41,6 +42,10 @@ class CalculatorView: UIView {
     func printResult(string: String) {
         //operationsToReduce.insert("\(result)", at: 0)
         textView.text.insert(contentsOf: "\(string)", at: textView.text.endIndex)
+    }
+    
+    func printZero() {
+        textView.text = "0"
     }
     
 }

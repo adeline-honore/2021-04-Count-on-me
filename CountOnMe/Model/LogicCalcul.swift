@@ -14,21 +14,21 @@ class LogicCalcul {
             
     
     
-    enum Operand {
-        case addition
-        case substraction
-        case multiplication
-        case division
+    enum Operand: String {
+        case addition = "+"
+        case substraction = "-"
+        case multiplication = "x"
+        case division = "/"
     }
     
     private var operand: Operand = .addition
     
     private var operationsToReduce: [String] = [""]
     
-    private let additionOperand = "+"
-    private let substractionOperand = "-"
-    private let multiplicationOperand = "x"
-    private let divisionOperand = "/"
+    //private let additionOperand = "+"
+    //private let substractionOperand = "-"
+    //private let multiplicationOperand = "x"
+    //private let divisionOperand = "/"
     private var priorityOperand = ""
     
     
@@ -40,13 +40,13 @@ class LogicCalcul {
         var result: [String] = [""]
         
         // Iterate over operations while an operand still here
-        while (operationsToReduce.count > 1) {
+        while operationsToReduce.count > 1 {
             
             // PriorityCalcul
             result = priorityCalcul(equation: operationsToReduce)
         }
         
-        while (operationsToReduce.count > 1) {
+        while operationsToReduce.count > 1 {
             
             // simpleCalcul
             result = simpleCalcul(equation: operationsToReduce)
@@ -89,14 +89,14 @@ class LogicCalcul {
     
     private func priorityCalcul(equation: [String]) -> [String] {
         
-        while (equation.firstIndex(of: multiplicationOperand ) != nil) || equation.firstIndex(of: divisionOperand) != nil {
+        while (equation.firstIndex(of: Operand.multiplication.rawValue/*multiplicationOperand*/ ) != nil) || equation.firstIndex(of: Operand.division.rawValue/*divisionOperand*/) != nil {
             
-            if (equation.firstIndex(of: multiplicationOperand) != nil) {
-                priorityOperand = multiplicationOperand
+            if (equation.firstIndex(of: Operand.multiplication.rawValue/*multiplicationOperand*/) != nil) {
+                priorityOperand = Operand.multiplication.rawValue/*multiplicationOperand*/
                 operand = .multiplication
             }
-            else if (equation.firstIndex(of: divisionOperand) != nil){
-                priorityOperand = divisionOperand
+            else if (equation.firstIndex(of: Operand.division.rawValue/*divisionOperand*/) != nil){
+                priorityOperand = Operand.division.rawValue/*divisionOperand*/
                 operand = .division
             }
             
@@ -123,6 +123,8 @@ class LogicCalcul {
         
         var resultat: Int = 0
         
+        //resultat = left Operand.RawValue right
+                
         switch operand {
         case .addition:
             resultat = left + right
