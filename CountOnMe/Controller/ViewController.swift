@@ -68,8 +68,6 @@ class ViewController: UIViewController {
         }
         
         let result = logic.didTappedEqualButton(string: calculatorView.elements)
-        
-        
         viewUpdate(string: result)
     }
     

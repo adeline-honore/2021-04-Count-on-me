@@ -25,10 +25,6 @@ class LogicCalcul {
     
     private var operationsToReduce: [String] = [""]
     
-    //private let additionOperand = "+"
-    //private let substractionOperand = "-"
-    //private let multiplicationOperand = "x"
-    //private let divisionOperand = "/"
     private var priorityOperand = ""
     
     
@@ -37,19 +33,20 @@ class LogicCalcul {
    
     
     func didTappedEqualButton(string: [String]) -> String {
-        var result: [String] = [""]
         
-        // Iterate over operations while an operand still here
-        while operationsToReduce.count > 1 {
+        var result: [String] = [""]
+                            
+        // PriorityCalcul
+        result = priorityCalcul(equation: string)
             
-            // PriorityCalcul
-            result = priorityCalcul(equation: operationsToReduce)
+        if result == [] {
+            result = string
         }
         
-        while operationsToReduce.count > 1 {
+        while result.count > 1 {
             
             // simpleCalcul
-            result = simpleCalcul(equation: operationsToReduce)
+            result = simpleCalcul(equation: result)
         }
         
         return result[0]
@@ -60,15 +57,17 @@ class LogicCalcul {
     
     private func simpleCalcul(equation: [String]) -> [String] {
         
-        guard let left = Int(equation[0]) else {
+        var string = equation
+                
+        guard let left = Int(string[0]) else {
             return [""]
         }
         
-        guard let right = Int(equation[2]) else {
+        guard let right = Int(string[2]) else {
             return [""]
         }
-        
-        let equationOperand = equation[1]
+                
+        let equationOperand = string[1]
         var result: Int = 0
         
         switch equationOperand {
@@ -80,42 +79,44 @@ class LogicCalcul {
             fatalError("Unknown operator !")
         }
         
-        operationsToReduce = Array(equation.dropFirst(3))
-        
-        return operationsToReduce
+        string = Array(string.dropFirst(3))
+        string.insert(String(result), at: 0)
+        return string
     }
     
     
     
     private func priorityCalcul(equation: [String]) -> [String] {
         
-        while (equation.firstIndex(of: Operand.multiplication.rawValue/*multiplicationOperand*/ ) != nil) || equation.firstIndex(of: Operand.division.rawValue/*divisionOperand*/) != nil {
+        var string = equation
+        
+        while (string.firstIndex(of: Operand.multiplication.rawValue) != nil) || string.firstIndex(of: Operand.division.rawValue) != nil {
             
-            if (equation.firstIndex(of: Operand.multiplication.rawValue/*multiplicationOperand*/) != nil) {
-                priorityOperand = Operand.multiplication.rawValue/*multiplicationOperand*/
+            if (string.firstIndex(of: Operand.multiplication.rawValue) != nil) {
+                priorityOperand = Operand.multiplication.rawValue
                 operand = .multiplication
             }
-            else if (equation.firstIndex(of: Operand.division.rawValue/*divisionOperand*/) != nil){
-                priorityOperand = Operand.division.rawValue/*divisionOperand*/
+            else if (string.firstIndex(of: Operand.division.rawValue) != nil){
+                priorityOperand = Operand.division.rawValue
                 operand = .division
             }
             
-            guard let n = equation.firstIndex(of: priorityOperand) else {
+            guard let n = string.firstIndex(of: priorityOperand) else {
                 return [""]
             }
             
-            guard let left = Int(equation[n-1]) else {
+            guard let left = Int(string[n-1]) else {
                 return [""]
             }
-            guard let right = Int(equation[n+1]) else {
+            guard let right = Int(string[n+1]) else {
                 return [""]
             }
                         
-            operationsToReduce[n-1] = String(operation(left: left, operand: operand, right: right))
-            operationsToReduce.remove(at: n)
-            operationsToReduce.remove(at: n)
+            string[n-1] = String(operation(left: left, operand: operand, right: right))
+            string.remove(at: n)
+            string.remove(at: n)
         }
-        return operationsToReduce
+        return string
     }
     
     

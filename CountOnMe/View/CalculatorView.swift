@@ -40,8 +40,8 @@ class CalculatorView: UIView {
     
     
     func printResult(string: String) {
-        //operationsToReduce.insert("\(result)", at: 0)
-        textView.text.insert(contentsOf: "\(string)", at: textView.text.endIndex)
+        textView.text.append(" = ")
+        textView.text.append(string)
     }
     
     func printZero() {
