@@ -14,7 +14,7 @@ class LogicCalcul {
             
     
     
-    enum Operand: String {
+    private enum Operand: String {
         case addition = "+"
         case substraction = "-"
         case multiplication = "x"
@@ -111,10 +111,17 @@ class LogicCalcul {
             guard let right = Int(string[n+1]) else {
                 return [""]
             }
-                        
-            string[n-1] = String(operation(left: left, operand: operand, right: right))
-            string.remove(at: n)
-            string.remove(at: n)
+            
+            
+            // division / 0
+            if operand == .division && right != 0 {
+                string[n-1] = String(operation(left: left, operand: operand, right: right))
+                string.remove(at: n)
+                string.remove(at: n)
+            }
+            else {
+                string = ["Pas un nombre"]
+            }
         }
         return string
     }
