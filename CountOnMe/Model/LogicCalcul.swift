@@ -12,16 +12,19 @@ class LogicCalcul {
     
     // MARK: - PROPERTIES
             
+    enum errorType: Error {
+        case division0
+        case multiOperaor
+    }
     
-    
-    private enum Operand: String {
+    private enum Operator: String {
         case addition = "+"
         case substraction = "-"
         case multiplication = "x"
         case division = "/"
     }
     
-    private var operand: Operand = .addition
+    private var operand: Operator = .addition
     
     private var operationsToReduce: [String] = [""]
     
@@ -32,24 +35,30 @@ class LogicCalcul {
     
    
     
-    func didTappedEqualButton(string: [String]) -> String {
+    func compute(string: [String]) -> Result<String,errorType> {
         
-        var result: [String] = [""]
+        var resultat: [String] = [""]
                             
         // PriorityCalcul
-        result = priorityCalcul(equation: string)
-            
-        if result == [] {
-            result = string
+        resultat = priorityCalcul(equation: string)
+                    
+        if resultat == [] {
+            resultat = string
         }
         
-        while result.count > 1 {
+        while resultat.count > 1 {
             
             // simpleCalcul
-            result = simpleCalcul(equation: result)
+            resultat = simpleCalcul(equation: resultat)
         }
         
-        return result[0]
+        //let a = resultat[0]
+        
+        guard !resultat[0].contains("error") else {
+            return .failure(.division0)
+            }
+            return .success(resultat[0])
+        
     }
     
     
@@ -90,44 +99,45 @@ class LogicCalcul {
         
         var string = equation
         
-        while (string.firstIndex(of: Operand.multiplication.rawValue) != nil) || string.firstIndex(of: Operand.division.rawValue) != nil {
+        while (string.firstIndex(of: Operator.multiplication.rawValue) != nil) || string.firstIndex(of: Operator.division.rawValue) != nil {
             
-            if (string.firstIndex(of: Operand.multiplication.rawValue) != nil) {
-                priorityOperand = Operand.multiplication.rawValue
+            if (string.firstIndex(of: Operator.multiplication.rawValue) != nil) {
+                priorityOperand = Operator.multiplication.rawValue
                 operand = .multiplication
             }
-            else if (string.firstIndex(of: Operand.division.rawValue) != nil){
-                priorityOperand = Operand.division.rawValue
+            else if (string.firstIndex(of: Operator.division.rawValue) != nil){
+                priorityOperand = Operator.division.rawValue
                 operand = .division
             }
             
-            guard let n = string.firstIndex(of: priorityOperand) else {
-                return [""]
-            }
-            
-            guard let left = Int(string[n-1]) else {
-                return [""]
-            }
-            guard let right = Int(string[n+1]) else {
+            guard
+                let n = string.firstIndex(of: priorityOperand),
+                let left = Int(string[n-1]),
+                let right = Int(string[n+1])
+            else {
                 return [""]
             }
             
             
-            // division / 0
-            if operand == .division && right != 0 {
+            if operand == .multiplication {
+                string[n-1] = String(operation(left: left, operand: operand, right: right))
+                string.remove(at: n)
+                string.remove(at: n)
+            } else if operand == .division && right != 0 {
                 string[n-1] = String(operation(left: left, operand: operand, right: right))
                 string.remove(at: n)
                 string.remove(at: n)
             }
-            else {
-                string = ["Pas un nombre"]
+            else if operand == .division && right == 0 {
+                print("Pas un nombre")
+                string = ["errorDivision0"]
             }
         }
         return string
     }
     
     
-    private func operation (left: Int, operand: Operand, right: Int) -> Int {
+    private func operation (left: Int, operand: Operator, right: Int) -> Int {
         
         var resultat: Int = 0
         
@@ -145,4 +155,14 @@ class LogicCalcul {
         }
         return resultat
     }
+    /*
+    private func multiOperatorsequation(equation: [String]) -> [String] {
+        var string = equation
+        //on parcourt le tableau de string et tant qu'on trouve en first index un opérateur et que le + est aussi un opérateur alors error
+        while ((string.firstIndex(of: Operator.RawValue)) != nil) {
+            <#code#>
+        }
+        
+        return string
+    }*/
 }

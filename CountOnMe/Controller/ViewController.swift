@@ -62,13 +62,24 @@ class ViewController: UIViewController {
         
         guard expressionIsCorrect else {
             //alertVC(expressionIsCorrect)
-            displayAlert(title: "Oups !", message: "no correct")
+            //displayAlert(/*title: "Oups !", */message: "no correct")
             //print("no correct")
             return
         }
         
-        let result = logic.didTappedEqualButton(string: calculatorView.elements)
-        viewUpdate(string: result)
+        let result = logic.compute(string: calculatorView.elements)
+        switch result {
+            case .success(let string):
+                print("on est ok")
+                viewUpdate(string: string)
+            case .failure(let error):
+                print(error)
+                //displayAlert(/*title: String, */message: String)
+                errorMessage(element: error)
+                print("soucis")
+            }
+        
+        //viewUpdate(string: result)
     }
     
     
@@ -86,7 +97,7 @@ class ViewController: UIViewController {
         if canAddOperator {
             calculatorView.textView.text.append(" \(witchOperand) ")
         } else {
-            displayAlert(title: "Oups !", message: "You can not add operand")
+            displayAlert(/*title: "Oups !", */message: "You can not add operand")
         }
     }
     
@@ -102,7 +113,7 @@ class ViewController: UIViewController {
         // displayAlert(title: "Oups !", message: "division impossible")
         
         if calculatorView.textView.text.last == "/" {
-            displayAlert(title: "Oups !", message: "division impossible")
+            displayAlert(/*title: "Oups !", */message: "division impossible")
         }
     }
     
@@ -123,6 +134,17 @@ class ViewController: UIViewController {
         }*/
         
         calculatorView.textView.text.append(numberText)
+    }
+    
+    private func errorMessage(element: LogicCalcul.errorType) {
+        switch element {
+        case .division0:
+            displayAlert(message: "Pas un nombre")
+        case .multiOperaor:
+            displayAlert(message: "succession d'opérateurs, calcul impossible")
+        default:
+            break
+        }
     }
     
 }
