@@ -24,10 +24,11 @@ class ViewController: UIViewController {
         //return calculatorView.elements.firstIndex(of: "=") != nil
     }
     
+    /*
     var canAddOperator: Bool {
         //return calculation.elements.last != "+" && calculation.elements.last != "-"
         return calculatorView.textView.text.last != "+" && calculatorView.textView.text.last != "-" && calculatorView.textView.text.last != "x" && calculatorView.textView.text.last != "/"
-    }
+    }*/
     
     var expressionIsCorrect: Bool {
         return calculatorView.textView.text.last != "+" && calculatorView.textView.text.last != "-"
@@ -55,7 +56,27 @@ class ViewController: UIViewController {
     }
     
     @IBAction func delLastEntry() {
-        calculatorView.del()
+       
+        var array = calculatorView.elements
+        print(array)
+        
+        let lastEntry = array.count - 1
+        print(lastEntry)
+        
+        array.remove(at: lastEntry)
+        print(array)
+        
+        var string: String = ""
+        
+        for i in array {
+            string.append(i)
+        }
+        
+        //string = string.split(separator: " ").map { "\($0)" }
+        
+        print(string)
+        calculatorView.del(string: string)
+        
     }
     
     @IBAction func tappedEqualButton() {
@@ -70,18 +91,11 @@ class ViewController: UIViewController {
         let result = logic.compute(string: calculatorView.elements)
         switch result {
             case .success(let string):
-                print("on est ok")
                 viewUpdate(string: string)
             case .failure(let error):
-                print(error)
-                //displayAlert(/*title: String, */message: String)
                 errorMessage(element: error)
-                print("soucis")
             }
-        
-        //viewUpdate(string: result)
     }
-    
     
     
     @IBAction func tappedNumberButton(_ sender: UIButton) {
@@ -93,12 +107,15 @@ class ViewController: UIViewController {
         guard let witchOperand = sender.title(for: .normal) else {
             return
         }
-                
+          
+        /*
         if canAddOperator {
             calculatorView.textView.text.append(" \(witchOperand) ")
         } else {
             displayAlert(/*title: "Oups !", */message: "You can not add operand")
-        }
+        }*/
+        
+        calculatorView.textView.text.append(" \(witchOperand) ")
     }
     
     
@@ -106,7 +123,7 @@ class ViewController: UIViewController {
         calculatorView.printResult(string: string)
     }
     
-    
+    /*
     private func divisionImposible() {
         
         // si la valeur du dernier indice est / alors displayalert
@@ -115,7 +132,7 @@ class ViewController: UIViewController {
         if calculatorView.textView.text.last == "/" {
             displayAlert(/*title: "Oups !", */message: "division impossible")
         }
-    }
+    }*/
     
     private func didTappedNumberButton(_ sender: UIButton) {
         
@@ -127,24 +144,12 @@ class ViewController: UIViewController {
             calculatorView.clear()
         }
         
-        /*
-        // ajouter la division impossible / 0
-        if numberText == "0" {
-            divisionImposible()
-        }*/
-        
         calculatorView.textView.text.append(numberText)
     }
     
-    private func errorMessage(element: LogicCalcul.errorType) {
-        switch element {
-        case .division0:
-            displayAlert(message: "Pas un nombre")
-        case .multiOperaor:
-            displayAlert(message: "succession d'opérateurs, calcul impossible")
-        default:
-            break
-        }
+    
+    private func errorMessage(element: LogicCalcul.ErrorType) {
+        displayAlert(message: element.message)
     }
     
 }

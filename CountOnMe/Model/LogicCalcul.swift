@@ -10,11 +10,21 @@ import Foundation
 
 class LogicCalcul {
     
-    // MARK: - PROPERTIES
+    // MARK: - enum
             
-    enum errorType: Error {
+    enum ErrorType: Error {
         case division0
-        case multiOperaor
+        case multiOperator
+        
+        var message: String {
+            switch self {
+            case .division0:
+                return "Pas un nombre"
+            case .multiOperator:
+                return "succession d'opérateurs, calcul impossible"
+                
+            }
+        }
     }
     
     private enum Operator: String {
@@ -24,46 +34,46 @@ class LogicCalcul {
         case division = "/"
     }
     
+    // MARK: - PROPRETIES
+    
     private var operand: Operator = .addition
-    
     private var operationsToReduce: [String] = [""]
-    
     private var priorityOperand = ""
     
     
     // MARK: - METHODS
     
-   
-    
-    func compute(string: [String]) -> Result<String,errorType> {
+    func compute(string: [String]) -> Result<String,ErrorType> {
         
-        var resultat: [String] = [""]
-                            
-        // PriorityCalcul
-        resultat = priorityCalcul(equation: string)
-                    
-        if resultat == [] {
-            resultat = string
-        }
+        var result: [String] = [""]
         
-        while resultat.count > 1 {
-            
-            // simpleCalcul
-            resultat = simpleCalcul(equation: resultat)
-        }
+        result = multiOperatorsequation(equation: string)
+        print(result)
         
-        //let a = resultat[0]
-        
-        guard !resultat[0].contains("error") else {
-            return .failure(.division0)
+        if result != ["error multi-operateur"] {
+            // PriorityCalcul
+            result = priorityCalcul(equation: string)
+                        
+            if result.isEmpty {
+                result = string
             }
-            return .success(resultat[0])
+            
+            while result.count > 1 {
+                // simpleCalcul
+                result = simpleCalcul(equation: result)
+            }
+        }
         
+        guard !result[0].contains("errorDivision0") else {
+            return .failure(ErrorType.division0)
+        }
+        guard !result[0].contains("error multi-operateur") else {
+            return .failure(ErrorType.multiOperator)
+        }
+            return .success(result[0])
     }
     
-    
-    
-    
+        
     private func simpleCalcul(equation: [String]) -> [String] {
         
         var string = equation
@@ -118,7 +128,6 @@ class LogicCalcul {
                 return [""]
             }
             
-            
             if operand == .multiplication {
                 string[n-1] = String(operation(left: left, operand: operand, right: right))
                 string.remove(at: n)
@@ -129,7 +138,6 @@ class LogicCalcul {
                 string.remove(at: n)
             }
             else if operand == .division && right == 0 {
-                print("Pas un nombre")
                 string = ["errorDivision0"]
             }
         }
@@ -155,14 +163,34 @@ class LogicCalcul {
         }
         return resultat
     }
-    /*
+    
+    // renvoyer un bool et retourner erreur appelr le func isMulti avec un verbe
     private func multiOperatorsequation(equation: [String]) -> [String] {
-        var string = equation
-        //on parcourt le tableau de string et tant qu'on trouve en first index un opérateur et que le + est aussi un opérateur alors error
-        while ((string.firstIndex(of: Operator.RawValue)) != nil) {
-            <#code#>
+        // faire une fonction 3 par 3 avec itération de vérif
+        var string: [String] = equation
+        var stringDic: [Int: String] = [:]
+        var cle = 0
+        
+        for i in string {
+            stringDic[cle] = i
+            cle += 1
         }
         
+        for (key, value) in stringDic {
+            
+            let indiceAfter = key + 1
+            
+            if indiceAfter < stringDic.count {
+                let s = stringDic[indiceAfter]
+               
+                if value == Operator.addition.rawValue || value == Operator.substraction.rawValue || value == Operator.multiplication.rawValue || value == Operator.division.rawValue {
+                    
+                    if s == Operator.addition.rawValue || s == Operator.substraction.rawValue || s == Operator.multiplication.rawValue || s == Operator.division.rawValue {
+                        string = ["error multi-operateur"]
+                    }
+                }
+            }
+        }
         return string
-    }*/
+    }
 }

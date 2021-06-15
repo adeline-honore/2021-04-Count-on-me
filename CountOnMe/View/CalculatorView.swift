@@ -21,14 +21,21 @@ class CalculatorView: UIView {
     }
     
     
-    
     // MARK: - METHODS
     
-    func del() {
+    func del(string: String) {
         
-        let lastEntry = textView.text.endIndex
+        textView.text = string
         
-        textView.text.remove(at: lastEntry)
+        //let a = textView.text.split(separator: " ").map { "\($0)" }
+        
+        //elements = a
+        
+        textView.text.split(separator: " ").map { "\($0)" }
+        
+        //let lastEntry = textView.text.endIndex
+        
+        //textView.text.remove(at: lastEntry)
         
         // mettre une boucle for pour parcourir le tableau et savoir si il s'agit d'un chiffre ou un operateur car si O : remove 3
     }
