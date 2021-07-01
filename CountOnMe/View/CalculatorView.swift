@@ -17,34 +17,32 @@ class CalculatorView: UIView {
     @IBOutlet weak var textView: UITextView!
     
     var elements: [String] {
+        /*didSet {
+            textView.text.split(separator: " ").map { "\($0)" }
+        }*/
         return textView.text.split(separator: " ").map { "\($0)" }
     }
     
     
     // MARK: - METHODS
     
-    func del(string: String) {
+    func del(element: [String]) {
         
-        textView.text = string
+        var array = element
+        print(array)
+                
+        array.remove(at: array.count - 1)
+        print(array)
         
-        //let a = textView.text.split(separator: " ").map { "\($0)" }
+        //elements = array.split(separator: " ")
+        //textView.text.split(separator: " ")
         
-        //elements = a
-        
-        textView.text.split(separator: " ").map { "\($0)" }
-        
-        //let lastEntry = textView.text.endIndex
-        
-        //textView.text.remove(at: lastEntry)
-        
-        // mettre une boucle for pour parcourir le tableau et savoir si il s'agit d'un chiffre ou un operateur car si O : remove 3
     }
     
     
     func clear() {
         textView.text = ""
     }
-    
     
     func printResult(string: String) {
         textView.text.append(" = ")

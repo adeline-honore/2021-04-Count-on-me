@@ -11,21 +11,6 @@ import Foundation
 class LogicCalcul {
     
     // MARK: - enum
-            
-    enum ErrorType: Error {
-        case division0
-        case multiOperator
-        
-        var message: String {
-            switch self {
-            case .division0:
-                return "Pas un nombre"
-            case .multiOperator:
-                return "succession d'opérateurs, calcul impossible"
-                
-            }
-        }
-    }
     
     private enum Operator: String {
         case addition = "+"
@@ -37,67 +22,61 @@ class LogicCalcul {
     // MARK: - PROPRETIES
     
     private var operand: Operator = .addition
-    private var operationsToReduce: [String] = [""]
     private var priorityOperand = ""
     
     
     // MARK: - METHODS
     
-    func compute(string: [String]) -> Result<String,ErrorType> {
+    func compute(string: [String]) -> Result<String, ErrorType> {
         
-        var result: [String] = [""]
+        var result: [String] = string
         
-        result = multiOperatorsequation(equation: string)
-        print(result)
         
-        if result != ["error multi-operateur"] {
-            // PriorityCalcul
-            result = priorityCalcul(equation: string)
-                        
-            if result.isEmpty {
-                result = string
-            }
-            
-            while result.count > 1 {
-                // simpleCalcul
-                result = simpleCalcul(equation: result)
-            }
+        guard !isOperator(string: string.last) else {
+            return .failure(ErrorType.noCorrect)
         }
+        
+        guard !isMultiOperatorsEquation(equation: string) else {
+            return .failure(ErrorType.multiOperator)
+        }
+        
+        result = priorityCalcul(equation: result)
         
         guard !result[0].contains("errorDivision0") else {
             return .failure(ErrorType.division0)
         }
-        guard !result[0].contains("error multi-operateur") else {
-            return .failure(ErrorType.multiOperator)
+        
+        while result.count > 1 {
+            result = simpleCalcul(equation: result)
         }
-            return .success(result[0])
+        
+        return .success(result[0])
     }
     
-        
+    
     private func simpleCalcul(equation: [String]) -> [String] {
         
         var string = equation
-                
-        guard let left = Int(string[0]) else {
+        
+        guard let left = Float(string[0]) else {
             return [""]
         }
         
-        guard let right = Int(string[2]) else {
+        guard let right = Float(string[2]) else {
             return [""]
         }
-                
+        
         let equationOperand = string[1]
-        var result: Int = 0
+        var result: Float = 0.0
         
         switch equationOperand {
         case "+":
-            result = operation(left: left, operand: .addition, right: right)
+            result = operation(left: Float(Int(left)), operand: .addition, right: Float(Int(right)))
         case "-":
-            result = operation(left: left, operand: .substraction, right: right)
+            result = operation(left: Float(Int(left)), operand: .substraction, right: Float(Int(right)))
         default:
             fatalError("Unknown operator !")
         }
-        
         string = Array(string.dropFirst(3))
         string.insert(String(result), at: 0)
         return string
@@ -105,7 +84,7 @@ class LogicCalcul {
     
     
     
-    private func priorityCalcul(equation: [String]) -> [String] {
+    private func priorityCalcul(equation: [String]) -> [String]/*Result<[String], ErrorType>*/ {
         
         var string = equation
         
@@ -122,75 +101,140 @@ class LogicCalcul {
             
             guard
                 let n = string.firstIndex(of: priorityOperand),
-                let left = Int(string[n-1]),
-                let right = Int(string[n+1])
+                let left = Float(string[n-1]),
+                let right = Float(string[n+1])
             else {
+                //return .failure(ErrorType.division0)
                 return [""]
             }
             
             if operand == .multiplication {
-                string[n-1] = String(operation(left: left, operand: operand, right: right))
+                string[n-1] = String(operation(left: Float(Int(left)), operand: operand, right: Float(Int(right))))
                 string.remove(at: n)
                 string.remove(at: n)
+                //return .success(string)
             } else if operand == .division && right != 0 {
-                string[n-1] = String(operation(left: left, operand: operand, right: right))
+                string[n-1] = String(operation(left: Float(Int(left)), operand: operand, right: Float(Int(right))))
                 string.remove(at: n)
                 string.remove(at: n)
+                //return .success(string)
             }
             else if operand == .division && right == 0 {
                 string = ["errorDivision0"]
+                //return .failure(ErrorType.division0)
             }
         }
         return string
     }
     
     
-    private func operation (left: Int, operand: Operator, right: Int) -> Int {
+    private func operation (left: Float, operand: Operator, right: Float) -> Float {
         
-        var resultat: Int = 0
+        var result: Float = 0.0
         
         //resultat = left Operand.RawValue right
-                
+        
         switch operand {
         case .addition:
-            resultat = left + right
+            result = left + right
         case .substraction:
-            resultat = left - right
+            result = left - right
         case .multiplication:
-            resultat = left * right
+            result = left * right
         case .division:
-            resultat = left / right
+            result = left / right
         }
-        return resultat
+        return result
     }
     
-    // renvoyer un bool et retourner erreur appelr le func isMulti avec un verbe
-    private func multiOperatorsequation(equation: [String]) -> [String] {
-        // faire une fonction 3 par 3 avec itération de vérif
-        var string: [String] = equation
-        var stringDic: [Int: String] = [:]
-        var cle = 0
+    
+    private func isMultiOperatorsEquation(equation: [String]) -> Bool {
         
-        for i in string {
-            stringDic[cle] = i
-            cle += 1
-        }
-        
-        for (key, value) in stringDic {
-            
-            let indiceAfter = key + 1
-            
-            if indiceAfter < stringDic.count {
-                let s = stringDic[indiceAfter]
-               
-                if value == Operator.addition.rawValue || value == Operator.substraction.rawValue || value == Operator.multiplication.rawValue || value == Operator.division.rawValue {
-                    
-                    if s == Operator.addition.rawValue || s == Operator.substraction.rawValue || s == Operator.multiplication.rawValue || s == Operator.division.rawValue {
-                        string = ["error multi-operateur"]
+        var result: Int = 0
+        var n: Int = 0
+        for i in stride(from: equation.startIndex, to: equation.endIndex, by: 3) {
+            while n < i + 3 && n < equation.endIndex {
+                if isOperator(string: equation[n]) {
+                    if isOperator(string: equation[n+1]) {
+                        result += 1
                     }
                 }
+                n += 1
             }
         }
-        return string
+        return result != 0
+    }
+    
+    
+    private func isOperator(string: String?) -> Bool {
+        
+        guard let string = string else {
+            return false
+        }
+        
+        return string == Operator.addition.rawValue ||
+            string == Operator.substraction.rawValue ||
+            string == Operator.multiplication.rawValue ||
+            string == Operator.division.rawValue
     }
 }
+
+
+/*
+ 
+ var p = priorityCalcul(equation: string)
+ print(p)
+ 
+ 
+ 
+ if p == . success(<#T##[String]#>) {
+ 
+ } else {
+ return .failure(ErrorType.division0)
+ }
+ 
+ 
+ if p == .failure(ErrorType.division0) {
+ return .failure(ErrorType.division0)
+ } else {
+ 
+ }
+ 
+ 
+ if priorityCalcul(equation: string) == .failure(ErrorType.division0) {
+ return .failure(ErrorType.division0)
+ } else {
+ result = simpleCalcul(equation: priorityCalcul(equation: result).)
+ }
+ 
+ if simpleCalcul(equation: result) == [""] {
+ return .success(result[0])
+ }
+ 
+ 
+ 
+ isMultiOperatorsequation(equation: string) ? return .failure(ErrorType.multiOperator);  result = string
+ 
+ if string != ["error multi-operateur"] {
+ // PriorityCalcul
+ result = priorityCalcul(equation: string)
+ 
+ if string.isEmpty {
+ string = string
+ }
+ 
+ 
+ 
+ 
+ while result.count > 1 {
+ simpleCalcul
+ string = simpleCalcul(equation: string)
+ }
+ 
+ 
+ 
+ /*guard !string[0].contains("error multi-operateur") else {
+ return .failure(ErrorType.multiOperator)
+ }*/
+ 
+ */

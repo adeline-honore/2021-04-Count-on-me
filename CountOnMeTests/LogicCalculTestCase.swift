@@ -10,29 +10,68 @@ import XCTest
 @testable import CountOnMe
 
 class LogicCalculTestCase: XCTestCase {
+    // Given
+    var logicCalcul: LogicCalcul!
     
-    func testGivenDivisionParZeroIsImpossibleWhenForAllCaractersThenItWillBeSendAnError() {
-        // Given
-        let logicCalcul = LogicCalcul()
+    override func setUp() {
+        super.setUp()
+        logicCalcul = LogicCalcul()
+    }
+    
+    func testGivenCaracteresWhenCaractersOperatorIsAdditionThenResultShouldBeTwentyFive() {
+        
+        let expected: Result<String,ErrorType> = Result.success("25.0")
         
         // When
-        logicCalcul.compute(string: ["5", "/", "0"])
+        let result = logicCalcul.compute(string: ["5", "+", "20"])
         
         // Then
-        XCTAssert(logicCalcul.compute(string: ["5", "/", "0"]) == Result.failure(.division0))
-            
+        XCTAssertEqual(result, expected)
+    }
+    
+    func testGivenCaracteresWhenCaractersOperatorIsPrioritaireThenResultShouldBeThirtyEight() {
+        
+        let expected: Result<String,ErrorType> = Result.success("38.0")
+        
+        // When
+        let result = logicCalcul.compute(string: ["8", "+", "6", "x", "5"])
+        // Then
+        XCTAssertEqual(result, expected)
+        
+    }
+    
+    
+    func testGivenDivisionParZeroIsImpossibleWhenForAllCaractersThenItWillBeSendFailureDivision() {
+        
+        let expected: Result<String,ErrorType> = Result.failure(.division0)
+        
+        // When
+        let result = logicCalcul.compute(string: ["5", "/", "0"])
+        
+        // Then
+        XCTAssertEqual(result, expected)
            
     }
     
-    func testGivenMultiOpreandThenForAllCaractersThenItWillBeSendAnError() {
-        // Given
-        let logicCalcul = LogicCalcul()
+    func testGivenMultiOpreandThenForAllCaractersThenItWillBeSendFailureMultiOperator() {
+        
+        let expected: Result<String,ErrorType> = Result.failure(.multiOperator)
         
         // When
-        //logicCalcul.compute(string: ["5", "/", "0"])
+        let result = logicCalcul.compute(string: ["5", "/", "+", "2"])
         
         // Then
-        XCTAssert(logicCalcul.compute(string: ["5", "+", "-", "8"]) == Result.failure(.multiOperator))
+        XCTAssertEqual(result, expected)
     }
     
+    func testGivenExpressionThenLastCaracterIsOperandThenItWillBeSendFailureNoCorrect() {
+        
+        let expected: Result<String,ErrorType> = Result.failure(.noCorrect)
+        
+        // When
+        let result = logicCalcul.compute(string: ["5", "+", "8", "+"])
+        
+        // Then
+        XCTAssertEqual(result, expected)
+    }
 }

@@ -15,27 +15,8 @@ class ViewController: UIViewController {
     private var calculatorView: CalculatorView!
     private var logic = LogicCalcul()
     
-    var expressionHaveEnoughElement: Bool {
-        return calculatorView.elements.count >= 3
-    }
-    
     var expressionHaveResult: Bool {
         return calculatorView.textView.text.firstIndex(of: "=") != nil
-        //return calculatorView.elements.firstIndex(of: "=") != nil
-    }
-    
-    /*
-    var canAddOperator: Bool {
-        //return calculation.elements.last != "+" && calculation.elements.last != "-"
-        return calculatorView.textView.text.last != "+" && calculatorView.textView.text.last != "-" && calculatorView.textView.text.last != "x" && calculatorView.textView.text.last != "/"
-    }*/
-    
-    var expressionIsCorrect: Bool {
-        return calculatorView.textView.text.last != "+" && calculatorView.textView.text.last != "-"
-    }
-    
-    var divisionImpossible: Bool {
-        return false
     }
     
     
@@ -56,37 +37,23 @@ class ViewController: UIViewController {
     }
     
     @IBAction func delLastEntry() {
-       
-        var array = calculatorView.elements
+        calculatorView.del(element: calculatorView.elements)
+        
+        /*var array = calculatorView.elements
         print(array)
         
         let lastEntry = array.count - 1
-        print(lastEntry)
         
         array.remove(at: lastEntry)
         print(array)
         
-        var string: String = ""
+        array.split(separator: " ")*/
         
-        for i in array {
-            string.append(i)
-        }
-        
-        //string = string.split(separator: " ").map { "\($0)" }
-        
-        print(string)
-        calculatorView.del(string: string)
+        //calculatorView.elements = array.split(separator: " ")
         
     }
     
     @IBAction func tappedEqualButton() {
-        
-        guard expressionIsCorrect else {
-            //alertVC(expressionIsCorrect)
-            //displayAlert(/*title: "Oups !", */message: "no correct")
-            //print("no correct")
-            return
-        }
         
         let result = logic.compute(string: calculatorView.elements)
         switch result {
@@ -107,40 +74,22 @@ class ViewController: UIViewController {
         guard let witchOperand = sender.title(for: .normal) else {
             return
         }
-          
-        /*
-        if canAddOperator {
-            calculatorView.textView.text.append(" \(witchOperand) ")
-        } else {
-            displayAlert(/*title: "Oups !", */message: "You can not add operand")
-        }*/
-        
         calculatorView.textView.text.append(" \(witchOperand) ")
     }
     
     
     private func viewUpdate(string: String) {
-        calculatorView.printResult(string: string)
+        calculatorView.printResult(string: removeZero(element: string))
     }
     
-    /*
-    private func divisionImposible() {
-        
-        // si la valeur du dernier indice est / alors displayalert
-        // displayAlert(title: "Oups !", message: "division impossible")
-        
-        if calculatorView.textView.text.last == "/" {
-            displayAlert(/*title: "Oups !", */message: "division impossible")
-        }
-    }*/
-    
+   
     private func didTappedNumberButton(_ sender: UIButton) {
         
         guard let numberText = sender.title(for: .normal) else {
             return
         }
         
-        if expressionHaveResult == true || calculatorView.textView.text == "0" {
+        if expressionHaveResult || calculatorView.textView.text == "0" {
             calculatorView.clear()
         }
         
@@ -148,8 +97,15 @@ class ViewController: UIViewController {
     }
     
     
-    private func errorMessage(element: LogicCalcul.ErrorType) {
+    private func errorMessage(element: ErrorType) {
         displayAlert(message: element.message)
+    }
+    
+    private func removeZero(element: String) -> String {
+        guard let double = Double(element)?.removeZerosFromEnd() else {
+            return ""
+        }
+        return double
     }
     
 }
