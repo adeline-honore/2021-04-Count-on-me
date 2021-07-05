@@ -13,29 +13,14 @@ import UIKit
 extension Double {
     
     func removeZerosFromEnd() -> String {
-        print("je suis dans l' extension")
         let formatter = NumberFormatter()
         let number = NSNumber(value: self)
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 9
+        let string = String(self)
         
-        return String(formatter.string(from: number) ?? "")
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = (string.components(separatedBy: ".").last!.count)
+        
+        return formatter.string(from: number) ?? "other"
     }
 }
 
-
-/*
- 
- import Foundation
- extension Double {
-     func removeZerosFromEnd() -> String {
-         let formatter = NumberFormatter()
-         let number = NSNumber(value: self)
-         formatter.minimumFractionDigits = 0
-         formatter.maximumFractionDigits = (self.components(separatedBy: ".").last)!.count
-         return String(formatter.string(from: number) ?? "")
-     }
- }
- 
- 
- */

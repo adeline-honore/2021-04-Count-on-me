@@ -12,6 +12,7 @@ enum ErrorType: Error {
     case division0
     case multiOperator
     case noCorrect
+    case other
     
     var message: String {
         switch self {
@@ -21,6 +22,8 @@ enum ErrorType: Error {
             return "succession d'opérateurs, calcul impossible"
         case .noCorrect:
             return "élements manquants dans le calcul"
+        case .other:
+            return "autre erreur"
             
         }
     }

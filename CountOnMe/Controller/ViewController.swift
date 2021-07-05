@@ -40,14 +40,14 @@ class ViewController: UIViewController {
         calculatorView.del(element: calculatorView.elements)
         
         /*var array = calculatorView.elements
-        print(array)
-        
-        let lastEntry = array.count - 1
-        
-        array.remove(at: lastEntry)
-        print(array)
-        
-        array.split(separator: " ")*/
+         print(array)
+         
+         let lastEntry = array.count - 1
+         
+         array.remove(at: lastEntry)
+         print(array)
+         
+         array.split(separator: " ")*/
         
         //calculatorView.elements = array.split(separator: " ")
         
@@ -57,11 +57,11 @@ class ViewController: UIViewController {
         
         let result = logic.compute(string: calculatorView.elements)
         switch result {
-            case .success(let string):
-                viewUpdate(string: string)
-            case .failure(let error):
-                errorMessage(element: error)
-            }
+        case .success(let double):
+            viewUpdate(double: double)
+        case .failure(let error):
+            errorMessage(element: error)
+        }
     }
     
     
@@ -78,11 +78,11 @@ class ViewController: UIViewController {
     }
     
     
-    private func viewUpdate(string: String) {
-        calculatorView.printResult(string: removeZero(element: string))
+    private func viewUpdate(double: Double) {
+        calculatorView.printResult(string: double.removeZerosFromEnd())
     }
     
-   
+    
     private func didTappedNumberButton(_ sender: UIButton) {
         
         guard let numberText = sender.title(for: .normal) else {
@@ -100,12 +100,4 @@ class ViewController: UIViewController {
     private func errorMessage(element: ErrorType) {
         displayAlert(message: element.message)
     }
-    
-    private func removeZero(element: String) -> String {
-        guard let double = Double(element)?.removeZerosFromEnd() else {
-            return ""
-        }
-        return double
-    }
-    
 }

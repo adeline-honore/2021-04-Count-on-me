@@ -12,14 +12,14 @@ import UIKit
 class CalculatorView: UIView {
     
     // MARK: - PROPERTIES
-
+    
     //@IBOutlet weak var textView: UITextView!
     @IBOutlet weak var textView: UITextView!
     
     var elements: [String] {
         /*didSet {
-            textView.text.split(separator: " ").map { "\($0)" }
-        }*/
+         textView.text.split(separator: " ").map { "\($0)" }
+         }*/
         return textView.text.split(separator: " ").map { "\($0)" }
     }
     
@@ -30,7 +30,7 @@ class CalculatorView: UIView {
         
         var array = element
         print(array)
-                
+        
         array.remove(at: array.count - 1)
         print(array)
         

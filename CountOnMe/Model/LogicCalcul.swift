@@ -13,6 +13,7 @@ class LogicCalcul {
     // MARK: - enum
     
     private enum Operator: String {
+        
         case addition = "+"
         case substraction = "-"
         case multiplication = "x"
@@ -27,7 +28,7 @@ class LogicCalcul {
     
     // MARK: - METHODS
     
-    func compute(string: [String]) -> Result<String, ErrorType> {
+    func compute(string: [String]) -> Result<Double, ErrorType> {
         
         var result: [String] = string
         
@@ -50,7 +51,7 @@ class LogicCalcul {
             result = simpleCalcul(equation: result)
         }
         
-        return .success(result[0])
+        return .success(Double(result[0])!)
     }
     
     
@@ -58,22 +59,22 @@ class LogicCalcul {
         
         var string = equation
         
-        guard let left = Float(string[0]) else {
+        guard let left = Double(string[0]) else {
             return [""]
         }
         
-        guard let right = Float(string[2]) else {
+        guard let right = Double(string[2]) else {
             return [""]
         }
         
         let equationOperand = string[1]
-        var result: Float = 0.0
+        var result: Double = 0.0
         
         switch equationOperand {
         case "+":
-            result = operation(left: Float(Int(left)), operand: .addition, right: Float(Int(right)))
+            result = operation(left: left, operand: .addition, right: right)
         case "-":
-            result = operation(left: Float(Int(left)), operand: .substraction, right: Float(Int(right)))
+            result = operation(left: left, operand: .substraction, right: right)
         default:
             fatalError("Unknown operator !")
         }
@@ -101,20 +102,20 @@ class LogicCalcul {
             
             guard
                 let n = string.firstIndex(of: priorityOperand),
-                let left = Float(string[n-1]),
-                let right = Float(string[n+1])
+                let left = Double(string[n-1]),
+                let right = Double(string[n+1])
             else {
                 //return .failure(ErrorType.division0)
                 return [""]
             }
             
             if operand == .multiplication {
-                string[n-1] = String(operation(left: Float(Int(left)), operand: operand, right: Float(Int(right))))
+                string[n-1] = String(operation(left: left, operand: operand, right: right))
                 string.remove(at: n)
                 string.remove(at: n)
                 //return .success(string)
             } else if operand == .division && right != 0 {
-                string[n-1] = String(operation(left: Float(Int(left)), operand: operand, right: Float(Int(right))))
+                string[n-1] = String(operation(left: left, operand: operand, right: right))
                 string.remove(at: n)
                 string.remove(at: n)
                 //return .success(string)
@@ -128,11 +129,9 @@ class LogicCalcul {
     }
     
     
-    private func operation (left: Float, operand: Operator, right: Float) -> Float {
+    private func operation (left: Double, operand: Operator, right: Double) -> Double {
         
-        var result: Float = 0.0
-        
-        //resultat = left Operand.RawValue right
+        var result: Double = 0.0
         
         switch operand {
         case .addition:
@@ -178,63 +177,3 @@ class LogicCalcul {
             string == Operator.division.rawValue
     }
 }
-
-
-/*
- 
- var p = priorityCalcul(equation: string)
- print(p)
- 
- 
- 
- if p == . success(<#T##[String]#>) {
- 
- } else {
- return .failure(ErrorType.division0)
- }
- 
- 
- if p == .failure(ErrorType.division0) {
- return .failure(ErrorType.division0)
- } else {
- 
- }
- 
- 
- if priorityCalcul(equation: string) == .failure(ErrorType.division0) {
- return .failure(ErrorType.division0)
- } else {
- result = simpleCalcul(equation: priorityCalcul(equation: result).)
- }
- 
- if simpleCalcul(equation: result) == [""] {
- return .success(result[0])
- }
- 
- 
- 
- isMultiOperatorsequation(equation: string) ? return .failure(ErrorType.multiOperator);  result = string
- 
- if string != ["error multi-operateur"] {
- // PriorityCalcul
- result = priorityCalcul(equation: string)
- 
- if string.isEmpty {
- string = string
- }
- 
- 
- 
- 
- while result.count > 1 {
- simpleCalcul
- string = simpleCalcul(equation: string)
- }
- 
- 
- 
- /*guard !string[0].contains("error multi-operateur") else {
- return .failure(ErrorType.multiOperator)
- }*/
- 
- */
