@@ -37,29 +37,34 @@ class ViewController: UIViewController {
     }
     
     @IBAction func delLastEntry() {
+        
+        
+        guard calculatorView.elements.count > 0 else {
+            print("calc count \(calculatorView.elements.count)")
+            calculatorView.clear()
+            return
+        }
+        
+        
         calculatorView.del(element: calculatorView.elements)
-        
-        /*var array = calculatorView.elements
-         print(array)
-         
-         let lastEntry = array.count - 1
-         
-         array.remove(at: lastEntry)
-         print(array)
-         
-         array.split(separator: " ")*/
-        
-        //calculatorView.elements = array.split(separator: " ")
         
     }
     
     @IBAction func tappedEqualButton() {
+        
+        print(calculatorView.elements)
         
         guard !isOperator(string: calculatorView.elements.last) else {
             errorMessage(element: .noCorrect)
             //ErrorType.noCorrect
             return
         }
+        
+        /*guard calculatorView.elements == nil else {
+            print("errrrr")
+            errorMessage(element: .noCorrect)
+            return
+        }*/
         
         viewUpdate(double: logic.compute(string: calculatorView.elements))
         
@@ -83,6 +88,10 @@ class ViewController: UIViewController {
         if isOperator(string: calculatorView.elements.last) {
             errorMessage(element: .multiOperator)
             print("appelle del function")
+            calculatorView.delMutilOperand(element: calculatorView.elements)
+            //calculatorView.del(element: calculatorView.elements)
+            //calculatorView.del(element: calculatorView.elements)
+            
         }
         
         guard let witchOperand = sender.title(for: .normal) else {
