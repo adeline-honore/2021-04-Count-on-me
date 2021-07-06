@@ -40,7 +40,7 @@ class LogicCalculTestCase: XCTestCase {
         
     }
     
-    
+    /*
     func testGivenDivisionParZeroIsImpossibleWhenForAllCaractersThenItWillBeSendFailureDivision() {
         
         let expected: Result<Double/*String*/,ErrorType> = Result.failure(.division0)
@@ -73,5 +73,5 @@ class LogicCalculTestCase: XCTestCase {
         
         // Then
         XCTAssertEqual(result, expected)
-    }
+    }*/
 }

@@ -12,13 +12,7 @@ class LogicCalcul {
     
     // MARK: - enum
     
-    private enum Operator: String {
-        
-        case addition = "+"
-        case substraction = "-"
-        case multiplication = "x"
-        case division = "/"
-    }
+    
     
     // MARK: - PROPRETIES
     
@@ -28,30 +22,33 @@ class LogicCalcul {
     
     // MARK: - METHODS
     
-    func compute(string: [String]) -> Result<Double, ErrorType> {
+    func compute(string: [String]) -> Double/*Result<Double, ErrorType>*/ {
         
         var result: [String] = string
         
-        
+        /*
         guard !isOperator(string: string.last) else {
             return .failure(ErrorType.noCorrect)
         }
+ 
         
         guard !isMultiOperatorsEquation(equation: string) else {
             return .failure(ErrorType.multiOperator)
-        }
+        }*/
         
         result = priorityCalcul(equation: result)
         
+        /*
         guard !result[0].contains("errorDivision0") else {
             return .failure(ErrorType.division0)
-        }
+        }*/
         
         while result.count > 1 {
             result = simpleCalcul(equation: result)
         }
         
-        return .success(Double(result[0])!)
+        //return .success(Double(result[0])!)
+        return Double(result[0])!
     }
     
     
@@ -105,7 +102,6 @@ class LogicCalcul {
                 let left = Double(string[n-1]),
                 let right = Double(string[n+1])
             else {
-                //return .failure(ErrorType.division0)
                 return [""]
             }
             
@@ -113,17 +109,15 @@ class LogicCalcul {
                 string[n-1] = String(operation(left: left, operand: operand, right: right))
                 string.remove(at: n)
                 string.remove(at: n)
-                //return .success(string)
             } else if operand == .division && right != 0 {
                 string[n-1] = String(operation(left: left, operand: operand, right: right))
                 string.remove(at: n)
                 string.remove(at: n)
-                //return .success(string)
             }
-            else if operand == .division && right == 0 {
+            /*else if operand == .division && right == 0 {
                 string = ["errorDivision0"]
                 //return .failure(ErrorType.division0)
-            }
+            }*/
         }
         return string
     }
@@ -146,7 +140,7 @@ class LogicCalcul {
         return result
     }
     
-    
+    /*
     private func isMultiOperatorsEquation(equation: [String]) -> Bool {
         
         var result: Int = 0
@@ -175,5 +169,5 @@ class LogicCalcul {
             string == Operator.substraction.rawValue ||
             string == Operator.multiplication.rawValue ||
             string == Operator.division.rawValue
-    }
+    }*/
 }

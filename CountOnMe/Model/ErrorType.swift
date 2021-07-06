@@ -17,13 +17,13 @@ enum ErrorType: Error {
     var message: String {
         switch self {
         case .division0:
-            return "Pas un nombre"
+            return "Division par 0 impossible! Pas un nombre"
         case .multiOperator:
-            return "succession d'opérateurs, calcul impossible"
+            return "Succession d'opérateurs, calcul impossible"
         case .noCorrect:
-            return "élements manquants dans le calcul"
+            return "Èlements manquants dans le calcul"
         case .other:
-            return "autre erreur"
+            return "Autre erreur"
             
         }
     }
