@@ -22,33 +22,29 @@ class LogicCalcul {
     
     // MARK: - METHODS
     
-    func compute(string: [String]) -> Double/*Result<Double, ErrorType>*/ {
+    func compute(string: [String]) -> Result<Double, ErrorType> {
         
         var result: [String] = string
         
-        /*
-        guard !isOperator(string: string.last) else {
+        guard !LogicCalcul.isOperator(string: string.last) else {
             return .failure(ErrorType.noCorrect)
         }
  
-        
         guard !isMultiOperatorsEquation(equation: string) else {
             return .failure(ErrorType.multiOperator)
-        }*/
+        }
         
         result = priorityCalcul(equation: result)
         
-        /*
         guard !result[0].contains("errorDivision0") else {
             return .failure(ErrorType.division0)
-        }*/
+        }
         
         while result.count > 1 {
             result = simpleCalcul(equation: result)
         }
         
-        //return .success(Double(result[0])!)
-        return Double(result[0])!
+        return .success(Double(result[0]) ?? 0.0)
     }
     
     
@@ -56,11 +52,7 @@ class LogicCalcul {
         
         var string = equation
         
-        guard let left = Double(string[0]) else {
-            return [""]
-        }
-        
-        guard let right = Double(string[2]) else {
+        guard let left = Double(string[0]), let right = Double(string[2]) else {
             return [""]
         }
         
@@ -114,10 +106,10 @@ class LogicCalcul {
                 string.remove(at: n)
                 string.remove(at: n)
             }
-            /*else if operand == .division && right == 0 {
+            else if operand == .division && right == 0 {
                 string = ["errorDivision0"]
                 //return .failure(ErrorType.division0)
-            }*/
+            }
         }
         return string
     }
@@ -140,15 +132,15 @@ class LogicCalcul {
         return result
     }
     
-    /*
+    
     private func isMultiOperatorsEquation(equation: [String]) -> Bool {
         
         var result: Int = 0
         var n: Int = 0
         for i in stride(from: equation.startIndex, to: equation.endIndex, by: 3) {
             while n < i + 3 && n < equation.endIndex {
-                if isOperator(string: equation[n]) {
-                    if isOperator(string: equation[n+1]) {
+                if LogicCalcul.isOperator(string: equation[n]) {
+                    if LogicCalcul.isOperator(string: equation[n+1]) {
                         result += 1
                     }
                 }
@@ -159,7 +151,7 @@ class LogicCalcul {
     }
     
     
-    private func isOperator(string: String?) -> Bool {
+    static func isOperator(string: String?) -> Bool {
         
         guard let string = string else {
             return false
@@ -169,5 +161,5 @@ class LogicCalcul {
             string == Operator.substraction.rawValue ||
             string == Operator.multiplication.rawValue ||
             string == Operator.division.rawValue
-    }*/
+    }
 }

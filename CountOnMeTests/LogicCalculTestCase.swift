@@ -20,7 +20,7 @@ class LogicCalculTestCase: XCTestCase {
     
     func testGivenCaracteresWhenCaractersOperatorIsAdditionThenResultShouldBeTwentyFive() {
         
-        let expected: Result<Double/*String*/,ErrorType> = Result.success(25.0)
+        let expected: Result<Double,ErrorType> = Result.success(25.0)
         
         // When
         let result = logicCalcul.compute(string: ["5", "+", "20"])
@@ -31,7 +31,7 @@ class LogicCalculTestCase: XCTestCase {
     
     func testGivenCaracteresWhenCaractersOperatorIsPrioritaireThenResultShouldBeThirtyEight() {
         
-        let expected: Result<Double/*String*/,ErrorType> = Result.success(38.0)
+        let expected: Result<Double,ErrorType> = Result.success(38.0)
         
         // When
         let result = logicCalcul.compute(string: ["8", "+", "6", "x", "5"])
@@ -40,10 +40,10 @@ class LogicCalculTestCase: XCTestCase {
         
     }
     
-    /*
+    
     func testGivenDivisionParZeroIsImpossibleWhenForAllCaractersThenItWillBeSendFailureDivision() {
         
-        let expected: Result<Double/*String*/,ErrorType> = Result.failure(.division0)
+        let expected: Result<Double,ErrorType> = Result.failure(.division0)
         
         // When
         let result = logicCalcul.compute(string: ["5", "/", "0"])
@@ -55,7 +55,7 @@ class LogicCalculTestCase: XCTestCase {
     
     func testGivenMultiOpreandThenForAllCaractersThenItWillBeSendFailureMultiOperator() {
         
-        let expected: Result<Double/*String*/,ErrorType> = Result.failure(.multiOperator)
+        let expected: Result<Double,ErrorType> = Result.failure(.multiOperator)
         
         // When
         let result = logicCalcul.compute(string: ["5", "/", "+", "2"])
@@ -66,12 +66,12 @@ class LogicCalculTestCase: XCTestCase {
     
     func testGivenExpressionThenLastCaracterIsOperandThenItWillBeSendFailureNoCorrect() {
         
-        let expected: Result<Double/*String*/,ErrorType> = Result.failure(.noCorrect)
+        let expected: Result<Double,ErrorType> = Result.failure(.noCorrect)
         
         // When
         let result = logicCalcul.compute(string: ["5", "+", "8", "+"])
         
         // Then
         XCTAssertEqual(result, expected)
-    }*/
+    }
 }

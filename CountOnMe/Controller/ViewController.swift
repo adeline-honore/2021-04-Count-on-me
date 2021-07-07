@@ -38,44 +38,28 @@ class ViewController: UIViewController {
     
     @IBAction func delLastEntry() {
         
-        
-        guard calculatorView.elements.count > 0 else {
-            print("calc count \(calculatorView.elements.count)")
-            calculatorView.clear()
+        guard !calculatorView.elements.isEmpty else {
+            calculatorView.printZero()
             return
         }
         
-        
-        calculatorView.del(element: calculatorView.elements)
-        
+        calculatorView.deleteLastCharacter()
     }
     
     @IBAction func tappedEqualButton() {
-        
-        print(calculatorView.elements)
-        
-        guard !isOperator(string: calculatorView.elements.last) else {
+                
+        guard !LogicCalcul.isOperator(string: calculatorView.elements.last) else {
             errorMessage(element: .noCorrect)
-            //ErrorType.noCorrect
             return
         }
         
-        /*guard calculatorView.elements == nil else {
-            print("errrrr")
-            errorMessage(element: .noCorrect)
-            return
-        }*/
-        
-        viewUpdate(double: logic.compute(string: calculatorView.elements))
-        
-        /*
          let result = logic.compute(string: calculatorView.elements)
          switch result {
          case .success(let double):
          viewUpdate(double: double)
          case .failure(let error):
          errorMessage(element: error)
-         }*/
+         }
     }
     
     
@@ -85,13 +69,9 @@ class ViewController: UIViewController {
     
     @IBAction func tappedOperandButton(_ sender: UIButton) {
         
-        if isOperator(string: calculatorView.elements.last) {
+        guard !LogicCalcul.isOperator(string: calculatorView.elements.last) else {
             errorMessage(element: .multiOperator)
-            print("appelle del function")
-            calculatorView.delMutilOperand(element: calculatorView.elements)
-            //calculatorView.del(element: calculatorView.elements)
-            //calculatorView.del(element: calculatorView.elements)
-            
+            return
         }
         
         guard let witchOperand = sender.title(for: .normal) else {
@@ -117,10 +97,6 @@ class ViewController: UIViewController {
             calculatorView.clear()
         }
         
-        guard !division0(sender: sender) else {
-            return errorMessage(element: .division0)
-        }
-        
         calculatorView.textView.text.append(numberText)
     }
     
@@ -128,44 +104,4 @@ class ViewController: UIViewController {
     private func errorMessage(element: ErrorType) {
         displayAlert(message: element.message)
     }
-    
-    private func isOperator(string: String?) -> Bool {
-        
-        guard let string = string else {
-            return false
-        }
-        
-        return string == Operator.addition.rawValue ||
-            string == Operator.substraction.rawValue ||
-            string == Operator.multiplication.rawValue ||
-            string == Operator.division.rawValue
-    }
-    
-    private func division0(sender: UIButton) -> Bool {
-        
-        return isOperator(string: calculatorView.elements.last) && sender.title(for: .normal) == "0"
-    }
-    
-    
 }
-
-
-
-/*
- private func isMultiOperatorsEquation(equation: [String]) -> Bool {
- 
- var result: Int = 0
- var n: Int = 0
- for i in stride(from: equation.startIndex, to: equation.endIndex, by: 3) {
- while n < i + 3 && n < equation.endIndex {
- if isOperator(string: equation[n]) {
- if isOperator(string: equation[n+1]) {
- result += 1
- }
- }
- n += 1
- }
- }
- return result != 0
- }*/
-
