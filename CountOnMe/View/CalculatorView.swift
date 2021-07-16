@@ -18,13 +18,11 @@ class CalculatorView: UIView {
         return textView.text.split(separator: " ").map { "\($0)" }
     }
     
-    
     // MARK: - METHODS
     
     func deleteLastCharacter() {
         textView.text.remove(at: textView.text.index(before: textView.text.endIndex))
     }
-    
     
     func clear() {
         textView.text = ""
@@ -38,5 +36,4 @@ class CalculatorView: UIView {
     func printZero() {
         textView.text = "0"
     }
-    
 }

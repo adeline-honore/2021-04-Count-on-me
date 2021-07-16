@@ -12,6 +12,7 @@ enum ErrorType: Error {
     case division0
     case multiOperator
     case noCorrect
+    case multiDecimalPoint
     case other
     
     var message: String {
@@ -22,6 +23,8 @@ enum ErrorType: Error {
             return "Succession d'opérateurs, calcul impossible"
         case .noCorrect:
             return "Èlements manquants dans le calcul"
+        case .multiDecimalPoint:
+            return "Succession de virgules, calcul impossible"
         case .other:
             return "Autre erreur"
             

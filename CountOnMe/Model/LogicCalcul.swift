@@ -10,15 +10,10 @@ import Foundation
 
 class LogicCalcul {
     
-    // MARK: - enum
-    
-    
-    
     // MARK: - PROPRETIES
     
     private var operand: Operator = .addition
     private var priorityOperand = ""
-    
     
     // MARK: - METHODS
     
@@ -29,15 +24,21 @@ class LogicCalcul {
         guard !LogicCalcul.isOperator(string: string.last) else {
             return .failure(ErrorType.noCorrect)
         }
- 
+        
         guard !isMultiOperatorsEquation(equation: string) else {
             return .failure(ErrorType.multiOperator)
         }
         
-        result = priorityCalcul(equation: result)
+        guard !isMultiDecimalPoint(equation: string) else {
+            return .failure(ErrorType.multiDecimalPoint)
+        }
         
-        guard !result[0].contains("errorDivision0") else {
+        guard !isDivision0(equation: string) else {
             return .failure(ErrorType.division0)
+        }
+        
+        while result.contains(Operator.multiplication.rawValue) || result.contains(Operator.division.rawValue) {
+            result = priorityCalcul(equation: result)
         }
         
         while result.count > 1 {
@@ -74,42 +75,35 @@ class LogicCalcul {
     
     
     
-    private func priorityCalcul(equation: [String]) -> [String]/*Result<[String], ErrorType>*/ {
+    private func priorityCalcul(equation: [String]) -> [String] {
         
         var string = equation
         
-        while (string.firstIndex(of: Operator.multiplication.rawValue) != nil) || string.firstIndex(of: Operator.division.rawValue) != nil {
-            
-            if (string.firstIndex(of: Operator.multiplication.rawValue) != nil) {
-                priorityOperand = Operator.multiplication.rawValue
-                operand = .multiplication
-            }
-            else if (string.firstIndex(of: Operator.division.rawValue) != nil){
-                priorityOperand = Operator.division.rawValue
-                operand = .division
-            }
-            
-            guard
-                let n = string.firstIndex(of: priorityOperand),
-                let left = Double(string[n-1]),
-                let right = Double(string[n+1])
-            else {
-                return [""]
-            }
-            
-            if operand == .multiplication {
-                string[n-1] = String(operation(left: left, operand: operand, right: right))
-                string.remove(at: n)
-                string.remove(at: n)
-            } else if operand == .division && right != 0 {
-                string[n-1] = String(operation(left: left, operand: operand, right: right))
-                string.remove(at: n)
-                string.remove(at: n)
-            }
-            else if operand == .division && right == 0 {
-                string = ["errorDivision0"]
-                //return .failure(ErrorType.division0)
-            }
+        if (string.firstIndex(of: Operator.multiplication.rawValue) != nil) {
+            priorityOperand = Operator.multiplication.rawValue
+            operand = .multiplication
+        }
+        else if (string.firstIndex(of: Operator.division.rawValue) != nil){
+            priorityOperand = Operator.division.rawValue
+            operand = .division
+        }
+        
+        guard
+            let n = string.firstIndex(of: priorityOperand),
+            let left = Double(string[n-1]),
+            let right = Double(string[n+1])
+        else {
+            return [""]
+        }
+        
+        if operand == .multiplication {
+            string[n-1] = String(operation(left: left, operand: operand, right: right))
+            string.remove(at: n)
+            string.remove(at: n)
+        } else if operand == .division && right != 0 {
+            string[n-1] = String(operation(left: left, operand: operand, right: right))
+            string.remove(at: n)
+            string.remove(at: n)
         }
         return string
     }
@@ -150,6 +144,37 @@ class LogicCalcul {
         return result != 0
     }
     
+    private func isDivision0(equation: [String]) -> Bool {
+        var result: Int = 0
+        var indexElement: Int = 0
+        
+        for element in equation {
+            if element == Operator.division.rawValue && ((equation[equation.index(after: indexElement)]) == "0") {
+                result += 1
+            }
+            indexElement += 1
+        }
+        return result != 0
+    }
+    
+    private func isMultiDecimalPoint(equation: [String]) -> Bool {
+        
+        var result: Int = 0
+        
+        for element in equation {
+            var decimal: Int = 0
+            element.forEach { char in
+                if LogicCalcul.isDecimal(string: String(char)) {
+                    decimal += 1
+                }
+                
+                if decimal > 1 {
+                    result += 1
+                }
+            }
+        }
+        return result != 0
+    }
     
     static func isOperator(string: String?) -> Bool {
         
@@ -161,5 +186,14 @@ class LogicCalcul {
             string == Operator.substraction.rawValue ||
             string == Operator.multiplication.rawValue ||
             string == Operator.division.rawValue
+    }
+    
+    static func isDecimal(string: String?) -> Bool {
+        
+        guard let string = string else {
+            return false
+        }
+        
+        return string.contains(".")
     }
 }

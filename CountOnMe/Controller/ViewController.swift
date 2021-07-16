@@ -20,7 +20,7 @@ class ViewController: UIViewController {
     }
     
     
-    // MARK: - METHODS
+    // MARK: - OVERIDED METHODS
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,61 +31,36 @@ class ViewController: UIViewController {
         calculatorView = view as? CalculatorView
     }
     
-    // View actions
+    // MARK: - IBActions
     @IBAction func newCalculation() {
         calculatorView.printZero()
     }
     
-    @IBAction func delLastEntry() {
-        
-        guard !calculatorView.elements.isEmpty else {
-            calculatorView.printZero()
-            return
-        }
-        
-        calculatorView.deleteLastCharacter()
+    @IBAction func deleteLastEntry() {
+        didDeleteLastEntry()
     }
     
     @IBAction func tappedEqualButton() {
-                
-        guard !LogicCalcul.isOperator(string: calculatorView.elements.last) else {
-            errorMessage(element: .noCorrect)
-            return
-        }
-        
-         let result = logic.compute(string: calculatorView.elements)
-         switch result {
-         case .success(let double):
-         viewUpdate(double: double)
-         case .failure(let error):
-         errorMessage(element: error)
-         }
+        didTappedEqualButton()
     }
-    
     
     @IBAction func tappedNumberButton(_ sender: UIButton) {
         didTappedNumberButton(sender)
     }
     
     @IBAction func tappedOperandButton(_ sender: UIButton) {
-        
-        guard !LogicCalcul.isOperator(string: calculatorView.elements.last) else {
-            errorMessage(element: .multiOperator)
-            return
-        }
-        
-        guard let witchOperand = sender.title(for: .normal) else {
-            return
-        }
-        
-        calculatorView.textView.text.append(" \(witchOperand) ")
+        didTappedOperandButton(sender)
     }
     
+    @IBAction func tappedDecimalPointButton() {
+        didTappedDecimalPointButton()
+    }
+    
+    // MARK: - other METHODS
     
     private func viewUpdate(double: Double) {
         calculatorView.printResult(string: double.removeZerosFromEnd())
     }
-    
     
     private func didTappedNumberButton(_ sender: UIButton) {
         
@@ -100,6 +75,52 @@ class ViewController: UIViewController {
         calculatorView.textView.text.append(numberText)
     }
     
+    private func didTappedEqualButton() {
+        
+        guard !LogicCalcul.isOperator(string: calculatorView.elements.last) else {
+            errorMessage(element: .noCorrect)
+            return
+        }
+        
+        let result = logic.compute(string: calculatorView.elements)
+        switch result {
+        case .success(let double):
+            viewUpdate(double: double)
+        case .failure(let error):
+            errorMessage(element: error)
+        }
+    }
+    
+    private func didTappedDecimalPointButton() {
+        guard !LogicCalcul.isDecimal(string: calculatorView.elements.last) else {
+            errorMessage(element: .multiDecimalPoint)
+            return
+        }
+        
+        calculatorView.textView.text.append(".")
+    }
+    
+    private func didDeleteLastEntry() {
+        guard !calculatorView.elements.isEmpty else {
+            calculatorView.printZero()
+            return
+        }
+        calculatorView.deleteLastCharacter()
+    }
+    
+    private func didTappedOperandButton(_ sender: UIButton) {
+        
+        guard !LogicCalcul.isOperator(string: calculatorView.elements.last) else {
+            errorMessage(element: .multiOperator)
+            return
+        }
+        
+        guard let witchOperand = sender.title(for: .normal) else {
+            return
+        }
+        
+        calculatorView.textView.text.append(" \(witchOperand) ")
+    }
     
     private func errorMessage(element: ErrorType) {
         displayAlert(message: element.message)
