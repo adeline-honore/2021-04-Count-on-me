@@ -13,7 +13,6 @@ class LogicCalcul {
     // MARK: - PROPRETIES
     
     private var operand: Operator = .addition
-    private var priorityOperand = ""
     
     // MARK: - METHODS
     
@@ -21,7 +20,7 @@ class LogicCalcul {
         
         var result: [String] = string
         
-        guard !LogicCalcul.isOperator(string: string.last) else {
+        guard !isOperator(string: string.last) else {
             return .failure(ErrorType.noCorrect)
         }
         
@@ -61,9 +60,9 @@ class LogicCalcul {
         var result: Double = 0.0
         
         switch equationOperand {
-        case "+":
+        case Operator.addition.rawValue:
             result = operation(left: left, operand: .addition, right: right)
-        case "-":
+        case Operator.substraction.rawValue:
             result = operation(left: left, operand: .substraction, right: right)
         default:
             fatalError("Unknown operator !")
@@ -79,17 +78,15 @@ class LogicCalcul {
         
         var string = equation
         
-        if (string.firstIndex(of: Operator.multiplication.rawValue) != nil) {
-            priorityOperand = Operator.multiplication.rawValue
+        if string.firstIndex(of: Operator.multiplication.rawValue) != nil {
             operand = .multiplication
         }
-        else if (string.firstIndex(of: Operator.division.rawValue) != nil){
-            priorityOperand = Operator.division.rawValue
+        else if string.firstIndex(of: Operator.division.rawValue) != nil {
             operand = .division
         }
         
         guard
-            let n = string.firstIndex(of: priorityOperand),
+            let n = string.firstIndex(of: operand.rawValue),
             let left = Double(string[n-1]),
             let right = Double(string[n+1])
         else {
@@ -133,8 +130,8 @@ class LogicCalcul {
         var n: Int = 0
         for i in stride(from: equation.startIndex, to: equation.endIndex, by: 3) {
             while n < i + 3 && n < equation.endIndex {
-                if LogicCalcul.isOperator(string: equation[n]) {
-                    if LogicCalcul.isOperator(string: equation[n+1]) {
+                if isOperator(string: equation[n]) {
+                    if isOperator(string: equation[n+1]) {
                         result += 1
                     }
                 }
@@ -149,7 +146,11 @@ class LogicCalcul {
         var indexElement: Int = 0
         
         for element in equation {
-            if element == Operator.division.rawValue && ((equation[equation.index(after: indexElement)]) == "0") {
+            /*guard */let next = equation[equation.index(after: indexElement)] /*else {
+                return false
+            }*/
+            
+            if element == Operator.division.rawValue && next == String(Int(0)) || next == String(Float(0)) {
                 result += 1
             }
             indexElement += 1
@@ -164,7 +165,7 @@ class LogicCalcul {
         for element in equation {
             var decimal: Int = 0
             element.forEach { char in
-                if LogicCalcul.isDecimal(string: String(char)) {
+                if isDecimal(string: String(char)) {
                     decimal += 1
                 }
                 
@@ -176,7 +177,7 @@ class LogicCalcul {
         return result != 0
     }
     
-    static func isOperator(string: String?) -> Bool {
+    func isOperator(string: String?) -> Bool {
         
         guard let string = string else {
             return false
@@ -188,7 +189,7 @@ class LogicCalcul {
             string == Operator.division.rawValue
     }
     
-    static func isDecimal(string: String?) -> Bool {
+    func isDecimal(string: String?) -> Bool {
         
         guard let string = string else {
             return false

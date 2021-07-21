@@ -15,12 +15,12 @@ class ViewController: UIViewController {
     private var calculatorView: CalculatorView!
     private var logic = LogicCalcul()
     
-    var expressionHaveResult: Bool {
-        return calculatorView.textView.text.firstIndex(of: "=") != nil
-    }
+    /*var expressionHaveResult: Bool {
+        calculatorView.textView.text.firstIndex(of: "=") != nil
+    }*/
     
     
-    // MARK: - OVERIDED METHODS
+    // MARK: - OVERRIDED METHODS
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,16 +68,18 @@ class ViewController: UIViewController {
             return
         }
         
-        if expressionHaveResult || calculatorView.textView.text == "0" {
+        if calculatorView.expressionHaveResult || calculatorView.textView.text == "0" {
             calculatorView.clear()
         }
         
         calculatorView.textView.text.append(numberText)
+        updateTextFont()
     }
     
     private func didTappedEqualButton() {
         
-        guard !LogicCalcul.isOperator(string: calculatorView.elements.last) else {
+        guard !logic
+                .isOperator(string: calculatorView.elements.last) else {
             errorMessage(element: .noCorrect)
             return
         }
@@ -88,16 +90,19 @@ class ViewController: UIViewController {
             viewUpdate(double: double)
         case .failure(let error):
             errorMessage(element: error)
+            didDeleteLastEntry()
         }
+        updateTextFont()
     }
     
     private func didTappedDecimalPointButton() {
-        guard !LogicCalcul.isDecimal(string: calculatorView.elements.last) else {
+        guard !logic.isDecimal(string: calculatorView.elements.last) else {
             errorMessage(element: .multiDecimalPoint)
             return
         }
         
         calculatorView.textView.text.append(".")
+        updateTextFont()
     }
     
     private func didDeleteLastEntry() {
@@ -110,7 +115,7 @@ class ViewController: UIViewController {
     
     private func didTappedOperandButton(_ sender: UIButton) {
         
-        guard !LogicCalcul.isOperator(string: calculatorView.elements.last) else {
+        guard !logic.isOperator(string: calculatorView.elements.last) else {
             errorMessage(element: .multiOperator)
             return
         }
@@ -120,9 +125,28 @@ class ViewController: UIViewController {
         }
         
         calculatorView.textView.text.append(" \(witchOperand) ")
+        updateTextFont()
     }
     
     private func errorMessage(element: ErrorType) {
         displayAlert(message: element.message)
+    }
+    
+    private func updateTextFont() {
+        if (calculatorView.textView.text.isEmpty || calculatorView.textView.bounds.size.equalTo(CGSize.zero)) {
+            return
+        }
+        
+        let textViewSize = calculatorView.textView.frame.size
+        let fixedWidth = textViewSize.width
+        let expectSize = calculatorView.textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat(MAXFLOAT)))
+
+        var expectFont = calculatorView.textView.font
+        if (expectSize.height > textViewSize.height) {
+            while (calculatorView.textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat(MAXFLOAT))).height > textViewSize.height) {
+                expectFont = calculatorView.textView.font!.withSize(calculatorView.textView.font!.pointSize - 1)
+                calculatorView.textView.font = expectFont
+            }
+        }
     }
 }

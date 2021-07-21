@@ -11,10 +11,9 @@ import UIKit
 // MARK: - EXTENSIONS
 
 extension UIViewController {
-    func displayAlert(message: String) {
-        
+    func displayAlert(title: String? = nil, message: String) {
         let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        return present(alertVC, animated: true, completion: nil)
+        present(alertVC, animated: true, completion: nil)
     }
 }

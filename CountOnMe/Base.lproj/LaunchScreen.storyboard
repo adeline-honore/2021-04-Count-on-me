@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="imageIcon" translatesAutoresizingMaskIntoConstraints="NO" id="0oI-o4-sZ8">
-                                <rect key="frame" x="130" y="371" width="154" height="154"/>
+                                <rect key="frame" x="100" y="341" width="214" height="214"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="0oI-o4-sZ8" secondAttribute="height" multiplier="1:1" id="QjN-PB-Q08"/>
                                 </constraints>
@@ -27,8 +27,7 @@
                         <color key="backgroundColor" red="0.30842840669999999" green="0.52511304619999999" blue="0.58131092790000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="0oI-o4-sZ8" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="D4b-2X-uJw"/>
-                            <constraint firstItem="0oI-o4-sZ8" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="130" id="IfM-RO-pxl"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="0oI-o4-sZ8" secondAttribute="trailing" constant="130" id="R4t-70-edo"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="0oI-o4-sZ8" secondAttribute="trailing" constant="100" id="R4t-70-edo"/>
                             <constraint firstItem="0oI-o4-sZ8" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="SzO-HC-jhM"/>
                         </constraints>
                     </view>

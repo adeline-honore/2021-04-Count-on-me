@@ -15,7 +15,11 @@ class CalculatorView: UIView {
     @IBOutlet weak var textView: UITextView!
     
     var elements: [String] {
-        return textView.text.split(separator: " ").map { "\($0)" }
+        textView.text.split(separator: " ").map { "\($0)" }
+    }
+    
+    var expressionHaveResult: Bool {
+        textView.text.firstIndex(of: "=") != nil
     }
     
     // MARK: - METHODS
