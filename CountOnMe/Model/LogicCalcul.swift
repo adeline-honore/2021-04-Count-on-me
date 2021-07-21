@@ -144,16 +144,19 @@ class LogicCalcul {
     private func isDivision0(equation: [String]) -> Bool {
         var result: Int = 0
         var indexElement: Int = 0
+        var n = 0
         
         for element in equation {
-            /*guard */let next = equation[equation.index(after: indexElement)] /*else {
-                return false
-            }*/
-            
-            if element == Operator.division.rawValue && next == String(Int(0)) || next == String(Float(0)) {
-                result += 1
+            if n < equation.count - 1 {
+                if element == Operator.division.rawValue {
+                    let next: String = equation[equation.index(after: indexElement)]
+                    if next == String(Int(0)) || next == String(Float(0)) {
+                        result += 1
+                    }
+                }
             }
             indexElement += 1
+            n += 1
         }
         return result != 0
     }
