@@ -15,11 +15,6 @@ class ViewController: UIViewController {
     private var calculatorView: CalculatorView!
     private var logic = LogicCalcul()
     
-    /*var expressionHaveResult: Bool {
-        calculatorView.textView.text.firstIndex(of: "=") != nil
-    }*/
-    
-    
     // MARK: - OVERRIDED METHODS
     
     override func viewDidLoad() {
@@ -32,37 +27,37 @@ class ViewController: UIViewController {
     }
     
     // MARK: - IBActions
-    @IBAction func newCalculation() {
+    @IBAction func didTapNewCalculation() {
         calculatorView.printZero()
     }
     
-    @IBAction func deleteLastEntry() {
-        didDeleteLastEntry()
+    @IBAction func didTapDeleteLastEntry() {
+        deleteLastEntry()
     }
     
-    @IBAction func tappedEqualButton() {
-        didTappedEqualButton()
+    @IBAction func didTapEqualButton() {
+        calculate()
     }
     
-    @IBAction func tappedNumberButton(_ sender: UIButton) {
-        didTappedNumberButton(sender)
+    @IBAction func didTapDigitButton(_ sender: UIButton) {
+        enterDigit(sender)
     }
     
-    @IBAction func tappedOperandButton(_ sender: UIButton) {
-        didTappedOperandButton(sender)
+    @IBAction func didTapOperandButton(_ sender: UIButton) {
+        enterOperand(sender)
     }
     
-    @IBAction func tappedDecimalPointButton() {
-        didTappedDecimalPointButton()
+    @IBAction func didTapDecimalPointButton() {
+        enterDecimalPoint()
     }
     
     // MARK: - other METHODS
     
-    private func viewUpdate(double: Double) {
+    private func updateView(double: Double) {
         calculatorView.printResult(string: double.removeZerosFromEnd())
     }
     
-    private func didTappedNumberButton(_ sender: UIButton) {
+    private func enterDigit(_ sender: UIButton) {
         
         guard let numberText = sender.title(for: .normal) else {
             return
@@ -76,7 +71,7 @@ class ViewController: UIViewController {
         updateTextFont()
     }
     
-    private func didTappedEqualButton() {
+    private func calculate() {
         
         guard !logic
                 .isOperator(string: calculatorView.elements.last) else {
@@ -87,15 +82,15 @@ class ViewController: UIViewController {
         let result = logic.compute(string: calculatorView.elements)
         switch result {
         case .success(let double):
-            viewUpdate(double: double)
+            updateView(double: double)
         case .failure(let error):
             errorMessage(element: error)
-            didDeleteLastEntry()
+            deleteLastEntry()
         }
         updateTextFont()
     }
     
-    private func didTappedDecimalPointButton() {
+    private func enterDecimalPoint() {
         guard !logic.isDecimal(string: calculatorView.elements.last) else {
             errorMessage(element: .multiDecimalPoint)
             return
@@ -105,7 +100,7 @@ class ViewController: UIViewController {
         updateTextFont()
     }
     
-    private func didDeleteLastEntry() {
+    private func deleteLastEntry() {
         guard !calculatorView.elements.isEmpty else {
             calculatorView.printZero()
             return
@@ -113,7 +108,7 @@ class ViewController: UIViewController {
         calculatorView.deleteLastCharacter()
     }
     
-    private func didTappedOperandButton(_ sender: UIButton) {
+    private func enterOperand(_ sender: UIButton) {
         
         guard !logic.isOperator(string: calculatorView.elements.last) else {
             errorMessage(element: .multiOperator)

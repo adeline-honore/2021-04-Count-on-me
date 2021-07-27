@@ -9,11 +9,7 @@
 import Foundation
 
 class LogicCalcul {
-    
-    // MARK: - PROPRETIES
-    
-    private var operand: Operator = .addition
-    
+            
     // MARK: - METHODS
     
     func compute(string: [String]) -> Result<Double, ErrorType> {
@@ -76,6 +72,7 @@ class LogicCalcul {
     
     private func priorityCalcul(equation: [String]) -> [String] {
         
+        var operand: Operator = .addition
         var string = equation
         
         if string.firstIndex(of: Operator.multiplication.rawValue) != nil {
